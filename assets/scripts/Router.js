@@ -11,7 +11,7 @@
   *     easily modify the URL without refreshing the page or anything
   */
 
-export class Router {
+export class Router { 
   static routes = {};
 
   /**
@@ -38,6 +38,7 @@ export class Router {
      * router instance using the 'this' keyword. Substitute 'home' for the variable
      * page
      */
+    this[page] = pageFunc;
   }
 
   /**
@@ -65,5 +66,38 @@ export class Router {
      *     and URL + hash to history
      *  4. Finally, call the stored function for the given page
      */
+
+    //console.log(JSON.stringify(history) + ' ---navigate history');
+    
+    if (!(page in this)) {
+      console.error("Function does not exist");
+      return;
+    }
+
+    let hash;
+    if (page=='home') {
+      hash = '';
+    } else {
+      hash = '#' + page;
+    };
+
+    if (statePopped == null) {
+      statePopped = false;
+    }
+
+    console.log(window.location.hash + ' -window-location-hash');
+
+    let currPage = window.location.hash;
+
+    if ((!statePopped) && (currPage != hash)) {
+      currPage = currPage.slice(1);
+      if (currPage == '') {
+        currPage = 'home';
+      }
+      history.pushState( {pageName: currPage}, '', window.location.pathname);
+      console.log(history);
+    }
+
+    setTimeout(this[page].call(), 1000);
   }
 }
